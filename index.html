@@ -25,6 +25,7 @@
         background: #f5f5f5;
         color: #2d2d2d;
         padding: 25px;
+        overflow-x: hidden;
       }
 
       .container {
@@ -480,6 +481,7 @@
       // ==========================================
       // DATABASE POIN CEKLIS GABUNGAN LENGKAP
       // ==========================================
+      let isDeveloperMode = false;
       const checklistData = {
         awalShift: [
           {
@@ -660,7 +662,7 @@
               <div class="point">
                 <div class="point-header">
                   <h3>${point.title}</h3>
-                  <button class="btn btn-danger no-print" onclick="deletePoint('${sectionId}', ${index})">Hapus</button>
+                  ${isDeveloperMode ? `<button class="btn btn-danger no-print" onclick="deletePoint('${sectionId}', ${index})">Hapus</button>` : ""}
                 </div>
             `;
 
@@ -763,14 +765,30 @@
       // CONTROLLER LOGIC (DEV PANEL & CRUD)
       // ==========================================
       function openDevLogin() {
-        const username = prompt("Masukan username developer:");
-        const password = prompt("Masukan password developer:");
-        if (username === "admin" && password === "123456") {
-          document.getElementById("devPanel").style.display = "block";
-          alert("Developer mode aktif!");
+        const username = prompt("Username:");
+        const password = prompt("Password:");
+
+        if (username === "kiyozora" && password === "satusampe8") {
+          // 1. Aktifkan status developer
+          isDeveloperMode = true;
+
+          // 2. Munculkan panel tambah data kustom
+          document.getElementById("devPanel").style.style.display = "block";
+
+          // 3. Render ulang checklist agar tombol hapus keluar ke layar
+          renderChecklist();
+
+          alert(
+            "Developer Mode Aktif! Anda sekarang bisa menambah & menghapus kategori.",
+          );
         } else {
-          alert("Username atau password salah!");
+          alert("Password salah atau Anda tidak memiliki akses!");
         }
+      }
+      function logoutDev() {
+        isDeveloperMode = false;
+        document.getElementById("devPanel").style.display = "none";
+        renderChecklist(); // Sembunyikan kembali semua tombol hapus
       }
 
       function addPoint() {
@@ -850,6 +868,8 @@
 
         // Buat kontainer tiruan khusus untuk PDF laporan
         const pdfContainer = document.createElement("div");
+        pdfContainer.style.background = "#fff";
+
         pdfContainer.style.padding = "20px";
         pdfContainer.style.background = "#fff";
         pdfContainer.style.color = "#000";
@@ -864,10 +884,10 @@
             .pdf-meta-table { width: 100%; margin-bottom: 25px; font-size: 12px; border-collapse: collapse; }
             .pdf-meta-table td { padding: 4px 8px; border: none; }
             .pdf-section-title { font-size: 15px; font-weight: 800; background: #7b1528; color: #fff; padding: 6px 10px; margin-top: 20px; margin-bottom: 10px; text-transform: uppercase; border-radius: 4px; }
-            .pdf-report-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11px; page-break-inside: auto; }
+            .pdf-report-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11px; page-break-inside: auto; table-layout: fixed; }
             .pdf-report-table tr { page-break-inside: avoid; page-break-after: auto; }
             .pdf-report-table th { background: #f2f2f2; border: 1px solid #ccc; padding: 6px 10px; text-align: left; font-weight: 700; }
-            .pdf-report-table td { border: 1px solid #ccc; padding: 6px 10px; vertical-align: top; }
+            .pdf-report-table td { border: 1px solid #ccc; padding: 6px 10px; vertical-align: top; word-break: break-word; }
             .pdf-cate-row { background: #fafafa; font-weight: 700; color: #5e0f1d; font-size: 12px; }
             .pdf-check-box { text-align: center; font-size: 14px; font-weight: bold; width: 60px; }
             .pdf-note-box { margin-top: 5px; background: #fdfdfd; padding: 8px; border: 1px dashed #bbb; font-style: italic; font-size: 11px; color: #444; }
@@ -986,11 +1006,32 @@
 
         // 3. Konfigurasi html2pdf standar dokumen portrait
         const options = {
-          margin: [0.5, 0.5, 0.5, 0.5],
+          margin: 5,
+
           filename: namaFileAkhir,
-          image: { type: "jpeg", quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-          jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+
+          image: {
+            type: "jpeg",
+            quality: 1,
+          },
+
+          html2canvas: {
+            scale: window.innerWidth < 768 ? 1 : 2,
+            useCORS: true,
+            letterRendering: true,
+            scrollX: 0,
+            scrollY: 0,
+          },
+
+          jsPDF: {
+            unit: "mm",
+            format: "a4",
+            orientation: "portrait",
+          },
+
+          pagebreak: {
+            mode: ["css", "legacy"],
+          },
         };
 
         // 4. Jalankan cetak menggunakan kontainer tiruan profesional yang baru dibuat
