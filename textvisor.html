@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checklist Harian Supervisor - Hantaleya Cafe</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background: #f5f5f5;
+        color: #2d2d2d;
+        padding: 25px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: auto;
+      }
+
+      .main-card {
+        background: #fff;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      }
+
+      /* HEADER */
+      .header {
+        background: linear-gradient(135deg, #5e0f1d, #7b1528, #96213a);
+        padding: 35px;
+        color: white;
+      }
+
+      .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .logo-area h1 {
+        font-size: 34px;
+        font-weight: 800;
+        margin-bottom: 8px;
+      }
+
+      .logo-area p {
+        opacity: 0.9;
+        font-size: 15px;
+      }
+
+      .header-badge {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(8px);
+        padding: 14px 18px;
+        border-radius: 14px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      /* CONTENT BODY */
+      .content {
+        padding: 30px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 18px;
+      }
+
+      .input-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      label {
+        margin-bottom: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #5a5a5a;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        border: none;
+        background: #f3f3f3;
+        padding: 14px;
+        border-radius: 14px;
+        outline: none;
+        font-size: 14px;
+        transition: 0.2s;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(123, 21, 40, 0.15);
+      }
+
+      textarea {
+        min-height: 60px;
+        resize: vertical;
+      }
+
+      /* ACTION BUTTONS */
+      .action-area {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 25px;
+        margin-bottom: 25px;
+      }
+
+      .btn {
+        border: none;
+        padding: 14px 22px;
+        border-radius: 14px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 14px;
+        transition: 0.2s;
+      }
+
+      .btn-primary {
+        background: #7b1528;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #5e0f1d;
+      }
+
+      .btn-secondary {
+        background: #ececec;
+        color: #333;
+      }
+
+      .btn-secondary:hover {
+        background: #ddd;
+      }
+
+      .btn-danger {
+        background: #d63d3d;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+      }
+
+      /* SHIFT SECTION */
+      .section {
+        margin-bottom: 28px;
+        background: #fafafa;
+        border-radius: 20px;
+        padding: 24px;
+        border: 1px solid #eee;
+      }
+
+      .section-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 22px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .section-title h2 {
+        font-size: 24px;
+        color: #5e0f1d;
+        font-weight: 800;
+      }
+
+      /* CARD POINT MODEL */
+      .point {
+        background: white;
+        border-radius: 18px;
+        padding: 20px;
+        margin-bottom: 18px;
+        border: 1px solid #ececec;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+      }
+
+      .point-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+        border-bottom: 2px solid #f8f9fa;
+        padding-bottom: 10px;
+      }
+
+      .point-header h3 {
+        font-size: 18px;
+        color: #7b1528;
+        font-weight: 700;
+      }
+
+      .subpoint {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        background: #f7f7f7;
+        padding: 14px;
+        border-radius: 14px;
+        margin-bottom: 12px;
+        transition: background 0.2s;
+      }
+
+      .subpoint:hover {
+        background: #f1f1f1;
+      }
+
+      .subpoint input[type="checkbox"] {
+        width: 22px;
+        height: 22px;
+        accent-color: #7b1528;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+
+      .subpoint span {
+        font-size: 14px;
+        line-height: 1.5;
+        flex: 1;
+        font-weight: 500;
+      }
+
+      .note {
+        margin-top: 15px;
+      }
+
+      /* DEV PANEL */
+      .dev-panel {
+        display: none;
+        margin-top: 30px;
+        padding: 25px;
+        background: #fff7f8;
+        border-radius: 20px;
+        border: 1px solid #f0d7dc;
+      }
+
+      .dev-panel h2 {
+        color: #7b1528;
+        margin-bottom: 20px;
+      }
+
+      /* FOOTER STYLING */
+      .footer-design {
+        margin-top: 35px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+        color: #666;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .footer-design span {
+        font-weight: 700;
+        color: #7b1528;
+      }
+
+      .small {
+        margin-top: 15px;
+        font-size: 12px;
+        color: #777;
+        line-height: 1.6;
+      }
+
+      /* RESPONSIVE LAYOUT */
+      @media (max-width: 768px) {
+        body {
+          padding: 12px;
+        }
+        .content {
+          padding: 15px;
+        }
+        .header {
+          padding: 20px;
+        }
+        .logo-area h1 {
+          font-size: 26px;
+        }
+        .section {
+          padding: 16px;
+        }
+        .point {
+          padding: 14px;
+        }
+      }
+
+      @media print {
+        .no-print {
+          display: none !important;
+        }
+        body {
+          background: white;
+          padding: 0;
+        }
+        .main-card {
+          box-shadow: none;
+          border-radius: 0;
+        }
+      }
+      @media print {
+        .no-print {
+          display: none !important;
+        }
+        body {
+          background: white !important;
+          padding: 0 !important;
+        }
+        .main-card {
+          box-shadow: none !important;
+          border-radius: 0 !important;
+          background: white !important;
+        }
+        /* Mengubah area abu-abu section menjadi putih bersih saat dicetak */
+        .section {
+          background: white !important;
+          border: 1px solid #ccc !important;
+          padding: 10px 0 !important;
+          page-break-inside: avoid; /* Mencegah kategori terpotong di tengah halaman PDF */
+          margin-bottom: 20px !important;
+        }
+        .point {
+          border: none !important;
+          box-shadow: none !important;
+          padding: 10px 0 !important;
+          page-break-inside: avoid;
+        }
+        .subpoint {
+          background: transparent !important;
+          border-bottom: 1px dashed #eee;
+          padding: 6px 0 !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="main-card" id="reportArea">
+        <div class="header">
+          <div class="header-top">
+            <div class="logo-area">
+              <h1>Ceklis Harian Supervisor</h1>
+              <p>Monitoring Operasional Outlet - Hantaleya Cafe</p>
+            </div>
+            <div class="header-badge">Hantaleya Cafe</div>
+          </div>
+        </div>
+
+        <div class="content">
+          <div class="grid">
+            <div class="input-group">
+              <label>Nama SPV</label>
+              <input type="text" id="nama-spv" placeholder="Nama Lengkap" />
+            </div>
+            <div class="input-group">
+              <label>Tanggal</label>
+              <input type="date" id="date" />
+            </div>
+            <div class="input-group">
+              <label>Waktu Bekerja</label>
+              <input
+                type="text"
+                id="waktu-kerja"
+                placeholder="Contoh: 08:00 - 16:00"
+              />
+            </div>
+            <div class="input-group">
+              <label>Outlet</label>
+              <input type="text" id="outlet" placeholder="Nama Outlet" />
+            </div>
+          </div>
+
+          <div class="action-area no-print">
+            <button class="btn btn-primary" onclick="downloadPDF()">
+              Unduh Laporan PDF
+            </button>
+            <button class="btn btn-secondary" onclick="openDevLogin()">
+              Developer Mode
+            </button>
+            <button
+              class="btn btn-danger"
+              style="padding: 14px 22px; border-radius: 14px; font-size: 14px"
+              onclick="resetForm()"
+            >
+              Reset Data Baru
+            </button>
+          </div>
+
+          <div class="section">
+            <div class="section-title"><h2>Awal Shift</h2></div>
+            <div id="awalShift"></div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">
+              <h2>Operasional (Running Shift)</h2>
+            </div>
+            <div id="operasional"></div>
+          </div>
+
+          <div class="section">
+            <div class="section-title"><h2>Akhir Shift</h2></div>
+            <div id="akhirShift"></div>
+          </div>
+
+          <div class="dev-panel no-print" id="devPanel">
+            <h2>Developer Panel</h2>
+            <div class="grid">
+              <div class="input-group">
+                <label>Pilih Section</label>
+                <select id="sectionSelect">
+                  <option value="awalShift">Awal Shift</option>
+                  <option value="operasional">Operasional</option>
+                  <option value="akhirShift">Akhir Shift</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label>Nama Kategori / Point</label>
+                <input
+                  type="text"
+                  id="pointTitle"
+                  placeholder="Contoh: Kebersihan & Fungsional"
+                />
+              </div>
+            </div>
+            <div class="input-group" style="margin-top: 18px">
+              <label>Item Ceklis (Pisahkan dengan tanda koma)</label>
+              <textarea
+                id="subpointsInput"
+                placeholder="Item 1, Item 2, Item 3"
+              ></textarea>
+            </div>
+            <div style="margin-top: 20px">
+              <button class="btn btn-primary" onclick="addPoint()">
+                Tambah Kategori
+              </button>
+            </div>
+            <div class="small">Username: admin | Password: 123456</div>
+          </div>
+
+          <div class="footer-design">
+            <div>Ceklis Harian Supervisor &copy; 2026</div>
+            <div>Design by <span>RifkiMohamad</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ==========================================
+      // DATABASE POIN CEKLIS GABUNGAN LENGKAP
+      // ==========================================
+      const checklistData = {
+        awalShift: [
+          {
+            title: "Karyawan",
+            items: [
+              "Seragam sesuai jadwal",
+              "Datang tepat waktu",
+              "Kebersihan dan kesegaran badan",
+              "Grooming (Rambut, kumis, jenggot, kuku) / Grooming (Jilbab, make up, kuku)",
+              "Sepatu, kaos kaki",
+              "Apron / Celemek",
+            ],
+          },
+          {
+            title: "Kebersihan & Fungsional",
+            items: [
+              "Lantai",
+              "Dinding",
+              "Jendela",
+              "Plafon",
+              "Kursi",
+              "Kolong dan bawah bantal sofa",
+              "Meja",
+              "Tirai",
+              "Tanaman",
+              "AC",
+              "TV & Speaker (Tayangan & volumenya)",
+              "Air, WiFi, Genset",
+              "Mesin Espresso, suhu showcase & freezer",
+              "Stop kontak lampu",
+              "HT",
+              "HP",
+              "Proyektor, layar, mic, speaker",
+            ],
+          },
+          {
+            title: "Produk & Kemasan",
+            items: [
+              "Stok Display (Jumlah awal, penataan, kondisi)",
+              "Stok Storage (Jumlah awal, kondisi, permintaan)",
+              "Papan Stok",
+              "Penguasaan produk",
+              "Tanggal kadaluarsa",
+            ],
+          },
+          {
+            title: "Promo & Reservasi",
+            items: [
+              "Remainder promo",
+              "Penguasaan materi promo",
+              "Target penjualan promo",
+              "Remainder reservasi",
+              "Remainder timeline persiapan reservasi",
+              "Media promo (TV, foam boarding, X banner, flyer, medsos, spanduk)",
+              "Uang muka reservasi",
+            ],
+          },
+          {
+            title: "Administrasi & Finansial",
+            items: [
+              "Stok kartu review",
+              "Stok form reservasi",
+              "Stok daftar belanja",
+              "Stok kartu produk titipan",
+              "Uang receh",
+              "Uang kas",
+              "Remainder transfer pengembalian DP",
+            ],
+          },
+        ],
+        operasional: [
+          {
+            title: "Karyawan",
+            items: [
+              "Senyum, sapa, salam",
+              "Pembagian area pelayanan",
+              "Triple check (Ulangi orderan, tempel struk di meja, ceklis yg tersaji)",
+              "Kendala & solusi",
+              "Komplain",
+            ],
+          },
+          {
+            title: "Kebersihan & Fungsional",
+            items: [
+              "Area Outdoor, semi outdoor, indoor, VIP",
+              "Toilet",
+              "AC",
+              "TV & Speaker (Tayangan & volumenya)",
+              "Air, WiFi, Genset",
+              "Lampu",
+              "Kipas angin",
+            ],
+          },
+          {
+            title: "Produk & Kemasan",
+            items: [
+              "Stok Display (Jumlah, penataan, kondisi)",
+              "Stok Storage (Jumlah, kondisi, permintaan)",
+              "Kontrol waktu (Dari cetak struk-penyajian)",
+              "Komplain produk",
+            ],
+          },
+          {
+            title: "Promo & Reservasi",
+            items: [
+              "penjualan promo",
+              "Penyajian orderan reservasi 30 menit sebelumnya",
+              "Klaim promo",
+            ],
+          },
+          {
+            title: "Administrasi & Finansial",
+            items: ["Invoice", "Kartu review", "Catatan keuangan"],
+          },
+        ],
+        akhirShift: [
+          {
+            title: "Karyawan",
+            items: ["Kendala", "Kebershian Perlengkapan Kerja"],
+          },
+          {
+            title: "Kebersihan & Fungsional",
+            items: [
+              "Area Outdoor, semi outdoor, indoor, VIP, dapur, bar",
+              "Toilet",
+              "AC",
+              "TV & Speaker (Tayangan & volumenya)",
+              "Air, WiFi, Genset",
+              "Lampu",
+              "Kipas angin",
+              "Tabung gas",
+              "Hewan",
+              "Sampah",
+            ],
+          },
+          {
+            title: "Produk",
+            items: [
+              "Stok Display (Jumlah akhir)",
+              "Stok Storage (Jumlah akhir, permintaan)",
+              "Jumlah penjualan",
+            ],
+          },
+          {
+            title: "Promo & Reservasi",
+            items: [
+              "Jumlah penjualan tiap-tiap promo",
+              "Jumlah klaim promo",
+              "Penyimpanan perlengkapan reservasi",
+            ],
+          },
+          {
+            title: "Administrasi & Finansial",
+            items: [
+              "Cash balance",
+              "Rekap copyan SPJ",
+              "Rekap kartu review",
+              "Rekap form reservasi",
+              "Rekap kartu titipan produk",
+              "Rekap pengembalian DP",
+            ],
+          },
+        ],
+      };
+
+      // ==========================================
+      // RENDER CORE VIEW ENGINE WITH STORAGE
+      // ==========================================
+      function renderChecklist() {
+        Object.keys(checklistData).forEach((sectionId) => {
+          const sectionContainer = document.getElementById(sectionId);
+          if (!sectionContainer) return;
+
+          sectionContainer.innerHTML = "";
+
+          checklistData[sectionId].forEach((point, index) => {
+            let html = `
+              <div class="point">
+                <div class="point-header">
+                  <h3>${point.title}</h3>
+                  <button class="btn btn-danger no-print" onclick="deletePoint('${sectionId}', ${index})">Hapus</button>
+                </div>
+            `;
+
+            point.items.forEach((item, itemIdx) => {
+              const uniqueId = `${sectionId}-${index}-${itemIdx}`;
+              // Cek status dari localStorage
+              const isChecked =
+                localStorage.getItem(`check-${uniqueId}`) === "true"
+                  ? "checked"
+                  : "";
+
+              html += `
+                <div class="subpoint">
+                  <input type="checkbox" id="check-${uniqueId}" ${isChecked} onchange="saveStatus('check-${uniqueId}', this.checked)">
+                  <span onclick="toggleCheckbox('check-${uniqueId}')">${item}</span>
+                </div>
+              `;
+            });
+
+            const textareaId = `note-${sectionId}-${index}`;
+            const savedNote = localStorage.getItem(textareaId) || "";
+
+            html += `
+                <div class="note">
+                  <label>Catatan Kategori ${point.title}</label>
+                  <textarea id="${textareaId}" placeholder="Tambahkan catatan khusus supervisor di sini..." oninput="saveStatus('${textareaId}', this.value)">${savedNote}</textarea>
+                </div>
+              </div>
+            `;
+
+            sectionContainer.innerHTML += html;
+          });
+        });
+
+        // Load data identitas atas
+        const fields = ["nama-spv", "date", "waktu-kerja", "outlet"];
+        fields.forEach((field) => {
+          const savedValue = localStorage.getItem(`field-${field}`);
+          if (savedValue) {
+            document.getElementById(field).value = savedValue;
+          }
+        });
+      }
+
+      // Fungsi Pembantu Save Ke LocalStorage
+      function saveStatus(id, value) {
+        localStorage.setItem(id, value);
+      }
+
+      function toggleCheckbox(id) {
+        const cb = document.getElementById(id);
+        cb.checked = !cb.checked;
+        saveStatus(id, cb.checked);
+      }
+
+      // Pasang Event Listener untuk Input Atas
+      ["nama-spv", "date", "waktu-kerja", "outlet"].forEach((field) => {
+        document.getElementById(field).addEventListener("input", function () {
+          saveStatus(`field-${field}`, this.value);
+        });
+      });
+
+      // INITIAL ENGINE SETUP
+      renderChecklist();
+      if (!document.getElementById("date").value) {
+        document.getElementById("date").valueAsDate = new Date();
+        saveStatus("field-date", document.getElementById("date").value);
+      }
+
+      // ==========================================
+      // RESET SYSTEM FORM FOR NEXT DAY
+      // ==========================================
+      function resetForm() {
+        if (
+          confirm(
+            "Apakah Anda yakin ingin menghapus seluruh isian form hari ini untuk memulai hari baru?",
+          )
+        ) {
+          // Ambil semua keys di localStorage lalu hapus yang berkaitan dengan form
+          Object.keys(localStorage).forEach((key) => {
+            if (
+              key.startsWith("check-") ||
+              key.startsWith("note-") ||
+              key.startsWith("field-")
+            ) {
+              localStorage.removeItem(key);
+            }
+          });
+          // Reset UI input text atas secara manual
+          ["nama-spv", "waktu-kerja", "outlet"].forEach((field) => {
+            document.getElementById(field).value = "";
+          });
+          document.getElementById("date").valueAsDate = new Date();
+          renderChecklist();
+          alert("Form berhasil di-reset!");
+        }
+      }
+
+      // ==========================================
+      // CONTROLLER LOGIC (DEV PANEL & CRUD)
+      // ==========================================
+      function openDevLogin() {
+        const username = prompt("Masukan username developer:");
+        const password = prompt("Masukan password developer:");
+        if (username === "admin" && password === "123456") {
+          document.getElementById("devPanel").style.display = "block";
+          alert("Developer mode aktif!");
+        } else {
+          alert("Username atau password salah!");
+        }
+      }
+
+      function addPoint() {
+        const section = document.getElementById("sectionSelect").value;
+        const title = document.getElementById("pointTitle").value.trim();
+        const subpoints = document
+          .getElementById("subpointsInput")
+          .value.trim();
+
+        if (!title || !subpoints) {
+          alert("Silakan isi Judul Kategori dan Item Ceklist!");
+          return;
+        }
+
+        checklistData[section].push({
+          title: title,
+          items: subpoints
+            .split(",")
+            .map((item) => item.trim())
+            .filter((item) => item !== ""),
+        });
+
+        renderChecklist();
+        document.getElementById("pointTitle").value = "";
+        document.getElementById("subpointsInput").value = "";
+      }
+
+      function deletePoint(section, index) {
+        if (
+          confirm("Yakin ingin menghapus seluruh kategori ini beserta itemnya?")
+        ) {
+          checklistData[section].splice(index, 1);
+          renderChecklist();
+        }
+      }
+
+      // ==========================================
+      // RENDER PDF SYSTEM EXPORT (PROFESSIONAL TABLE REPORT)
+      // ==========================================
+      function downloadPDF() {
+        const element = document.getElementById("reportArea");
+
+        // 1. Ambil data identitas untuk penamaan file
+        const namaSPV =
+          document
+            .getElementById("nama-spv")
+            .value.trim()
+            .replace(/[^a-zA-Z0-9]/g, "_") || "Tanpa_Nama";
+        const tanggalInput = document.getElementById("date").value;
+        const namaOutlet =
+          document
+            .getElementById("outlet")
+            .value.trim()
+            .replace(/[^a-zA-Z0-9]/g, "_") || "Hantaleya";
+
+        let tanggalFormatted = "Tanpa_Tanggal";
+        if (tanggalInput) {
+          const d = new Date(tanggalInput);
+          const tgl = String(d.getDate()).padStart(2, "0");
+          const bln = String(d.getMonth() + 1).padStart(2, "0");
+          const thn = d.getFullYear();
+          tanggalFormatted = `${tgl}-${bln}-${thn}`;
+        }
+        const namaFileAkhir = `Ceklist_${namaOutlet}_${tanggalFormatted}_${namaSPV}.pdf`;
+
+        // ===================================================
+        // TRANSFORMASI TOTAL MENJADI TABEL LAPORAN PROFESIONAL
+        // ===================================================
+        // Simpan isi HTML asli sebelum dirombak
+        const originalHTML = element.innerHTML;
+
+        // Ambil nilai input yang sedang diisi oleh user saat ini
+        const valNama = document.getElementById("nama-spv").value;
+        const valTanggal = document.getElementById("date").value;
+        const valWaktu = document.getElementById("waktu-kerja").value;
+        const valOutlet = document.getElementById("outlet").value;
+
+        // Buat kontainer tiruan khusus untuk PDF laporan
+        const pdfContainer = document.createElement("div");
+        pdfContainer.style.padding = "20px";
+        pdfContainer.style.background = "#fff";
+        pdfContainer.style.color = "#000";
+        pdfContainer.style.fontFamily = "'Inter', sans-serif";
+
+        // Gaya CSS internal khusus untuk tabel PDF laporan
+        let tableStyles = `
+          <style>
+            .pdf-header { border-bottom: 3px double #7b1528; padding-bottom: 12px; margin-bottom: 20px; }
+            .pdf-title { font-size: 24px; font-weight: 800; color: #7b1528; text-transform: uppercase; text-align: center; }
+            .pdf-subtitle { font-size: 12px; text-align: center; color: #555; margin-bottom: 15px; }
+            .pdf-meta-table { width: 100%; margin-bottom: 25px; font-size: 12px; border-collapse: collapse; }
+            .pdf-meta-table td { padding: 4px 8px; border: none; }
+            .pdf-section-title { font-size: 15px; font-weight: 800; background: #7b1528; color: #fff; padding: 6px 10px; margin-top: 20px; margin-bottom: 10px; text-transform: uppercase; border-radius: 4px; }
+            .pdf-report-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11px; page-break-inside: auto; }
+            .pdf-report-table tr { page-break-inside: avoid; page-break-after: auto; }
+            .pdf-report-table th { background: #f2f2f2; border: 1px solid #ccc; padding: 6px 10px; text-align: left; font-weight: 700; }
+            .pdf-report-table td { border: 1px solid #ccc; padding: 6px 10px; vertical-align: top; }
+            .pdf-cate-row { background: #fafafa; font-weight: 700; color: #5e0f1d; font-size: 12px; }
+            .pdf-check-box { text-align: center; font-size: 14px; font-weight: bold; width: 60px; }
+            .pdf-note-box { margin-top: 5px; background: #fdfdfd; padding: 8px; border: 1px dashed #bbb; font-style: italic; font-size: 11px; color: #444; }
+            .pdf-footer { margin-top: 30px; border-top: 1px solid #ccc; padding-top: 10px; font-size: 10px; display: flex; justify-content: space-between; }
+          </style>
+        `;
+
+        // Susun HTML Struktur Dokumen Laporan Resmi
+        let pdfHTML = tableStyles;
+        pdfHTML += `
+          <div class="pdf-header">
+            <div class="pdf-title">Ceklis Harian Supervisor</div>
+            <div class="pdf-subtitle">Monitoring Operasional Outlet - Hantaleya Cafe</div>
+            
+            <table class="pdf-meta-table">
+              <tr>
+                <td style="width:15%"><strong>Nama SPV:</strong></td><td style="width:35%">${valNama || "-"}</td>
+                <td style="width:15%"><strong>Waktu Kerja:</strong></td><td style="width:35%">${valWaktu || "-"}</td>
+              </tr>
+              <tr>
+                <td><strong>Tanggal:</strong></td><td>${tanggalFormatted}</td>
+                <td><strong>Outlet:</strong></td><td>${valOutlet || "-"}</td>
+              </tr>
+            </table>
+          </div>
+        `;
+
+        // Ambil data checklist secara terstruktur berdasarkan object data utama
+        const sectionsMapping = {
+          awalShift: "Awal Shift",
+          operasional: "Operasional (Running Shift)",
+          akhirShift: "Akhir Shift",
+        };
+
+        Object.keys(sectionsMapping).forEach((sectionId) => {
+          pdfHTML += `<div class="pdf-section-title">${sectionsMapping[sectionId]}</div>`;
+
+          pdfHTML += `
+            <table class="pdf-report-table">
+              <thead>
+                <tr>
+                  <th style="width: 85%;">Item Penilaian / Parameter Kerja</th>
+                  <th class="pdf-check-box">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+          `;
+
+          checklistData[sectionId].forEach((point, index) => {
+            // Baris judul kategori (Karyawan, Kebersihan, dll)
+            pdfHTML += `
+              <tr class="pdf-cate-row">
+                <td colspan="2">${point.title}</td>
+              </tr>
+            `;
+
+            // Baris item-item penilaian di bawahnya
+            point.items.forEach((item, itemIdx) => {
+              const uniqueId = `${sectionId}-${index}-${itemIdx}`;
+              const cbReal = document.getElementById(`check-${uniqueId}`);
+
+              // Jika dicetak dicentang tampilkan simbol [ V ], jika tidak kosongkan
+              const statusSimbol = cbReal && cbReal.checked ? "&#10004;" : "";
+
+              pdfHTML += `
+                <tr>
+                  <td style="padding-left: 20px;">${item}</td>
+                  <td class="pdf-check-box" style="color: ${statusSimbol ? "#7b1528" : "#ccc"};">${statusSimbol}</td>
+                </tr>
+              `;
+            });
+
+            // Ambil catatan tulisan tangan dari textarea kategori ini
+            const taReal = document.getElementById(
+              `note-${sectionId}-${index}`,
+            );
+            const isiCatatan = taReal ? taReal.value.trim() : "";
+
+            if (isiCatatan) {
+              pdfHTML += `
+                <tr>
+                  <td colspan="2">
+                    <div class="pdf-note-box"><strong>Catatan Kategori ${point.title}:</strong> ${isiCatatan}</div>
+                  </td>
+                </tr>
+              `;
+            }
+          });
+
+          pdfHTML += `</tbody></table>`;
+        });
+
+        // Bagian Footer Tanda Tangan Dokumen Cetak Resmi
+        pdfHTML += `
+          <table style="width: 100%; margin-top: 50px; font-size: 12px; border-collapse: collapse;">
+            <tr>
+              <td style="width: 50%; text-align: center; border:none;">
+                <p>Dilaporkan Oleh,</p>
+                <br><br><br>
+                <p><strong>( ${valNama || "........................"} )</strong><br>Supervisor On Duty</p>
+              </td>
+              <td style="width: 50%; text-align: center; border:none;">
+                <p>Diketahui Oleh,</p>
+                <br><br><br>
+                <p><strong>( .................................... )</strong><br>Manager / Owner</p>
+              </td>
+            </tr>
+          </table>
+          <div class="pdf-footer">
+            <div>Ceklis Harian Supervisor &copy; 2026</div>
+            <div>Design by RifkiMohamad</div>
+          </div>
+        `;
+
+        pdfContainer.innerHTML = pdfHTML;
+
+        // 3. Konfigurasi html2pdf standar dokumen portrait
+        const options = {
+          margin: [0.5, 0.5, 0.5, 0.5],
+          filename: namaFileAkhir,
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+          jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+        };
+
+        // 4. Jalankan cetak menggunakan kontainer tiruan profesional yang baru dibuat
+        html2pdf().set(options).from(pdfContainer).save();
+      }
+    </script>
+  </body>
+</html>
