@@ -7,7 +7,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
 
@@ -253,8 +253,9 @@
         margin-top: 15px;
       }
 
-      /* DEV PANEL */
-      .dev-panel {
+      /* DEV PANEL & ARCHIVE PANEL */
+      .dev-panel,
+      .archive-panel {
         display: none;
         margin-top: 30px;
         padding: 25px;
@@ -263,9 +264,124 @@
         border: 1px solid #f0d7dc;
       }
 
-      .dev-panel h2 {
+      .dev-panel h2,
+      .archive-panel h2 {
         color: #7b1528;
         margin-bottom: 20px;
+      }
+
+      /* ARCHIVE TABLE */
+      .archive-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        font-size: 14px;
+      }
+
+      .archive-table th,
+      .archive-table td {
+        border: 1px solid #f0d7dc;
+        padding: 12px;
+        text-align: left;
+      }
+
+      .archive-table th {
+        background: #7b1528;
+        color: white;
+      }
+
+      .archive-table tr:nth-child(even) {
+        background: #fff;
+      }
+
+      /* NEW: PREVIEW MODAL WINDOW FOR MANAGEMENT */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .modal-box {
+        background: white;
+        width: 100%;
+        max-width: 850px;
+        height: 85vh;
+        border-radius: 24px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        animation: slideUp 0.3s ease-out;
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(30px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .modal-header {
+        background: #7b1528;
+        color: white;
+        padding: 20px 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .modal-header h3 {
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .modal-close {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+      }
+
+      .modal-close:hover {
+        background: rgba(255, 255, 255, 0.4);
+      }
+
+      .modal-body {
+        padding: 30px;
+        overflow-y: auto;
+        flex: 1;
+        background: #fdfdfd;
+      }
+
+      .modal-footer {
+        background: #f8f9fa;
+        padding: 15px 25px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        border-top: 1px solid #eee;
       }
 
       /* FOOTER STYLING */
@@ -285,6 +401,13 @@
       .footer-design span {
         font-weight: 700;
         color: #7b1528;
+      }
+
+      .footer-link {
+        cursor: pointer;
+        color: #7b1528;
+        text-decoration: underline;
+        font-weight: 600;
       }
 
       .small {
@@ -321,19 +444,6 @@
           display: none !important;
         }
         body {
-          background: white;
-          padding: 0;
-        }
-        .main-card {
-          box-shadow: none;
-          border-radius: 0;
-        }
-      }
-      @media print {
-        .no-print {
-          display: none !important;
-        }
-        body {
           background: white !important;
           padding: 0 !important;
         }
@@ -342,12 +452,11 @@
           border-radius: 0 !important;
           background: white !important;
         }
-        /* Mengubah area abu-abu section menjadi putih bersih saat dicetak */
         .section {
           background: white !important;
           border: 1px solid #ccc !important;
           padding: 10px 0 !important;
-          page-break-inside: avoid; /* Mencegah kategori terpotong di tengah halaman PDF */
+          page-break-inside: avoid;
           margin-bottom: 20px !important;
         }
         .point {
@@ -402,15 +511,20 @@
           </div>
 
           <div class="action-area no-print">
-            <button class="btn btn-primary" onclick="downloadPDF()">
-              Unduh Laporan PDF
-            </button>
             <button class="btn btn-secondary" onclick="openDevLogin()">
               Developer Mode
             </button>
+            <button class="btn btn-secondary" onclick="toggleArchivePanel()">
+              Lihat Arsip Manajemen
+            </button>
             <button
               class="btn btn-danger"
-              style="padding: 14px 22px; border-radius: 14px; font-size: 14px"
+              style="
+                padding: 14px 22px;
+                border-radius: 14px;
+                font-size: 14px;
+                margin-left: auto;
+              "
               onclick="resetForm()"
             >
               Reset Data Baru
@@ -434,6 +548,49 @@
             <div id="akhirShift"></div>
           </div>
 
+          <div
+            class="action-area no-print"
+            style="margin-top: 35px; justify-content: center"
+          >
+            <button
+              class="btn btn-primary"
+              style="
+                font-size: 16px;
+                padding: 18px 40px;
+                width: 100%;
+                max-width: 500px;
+                box-shadow: 0 4px 15px rgba(123, 21, 40, 0.3);
+              "
+              onclick="downloadPDF()"
+            >
+              Unduh Laporan PDF & Simpan ke Arsip
+            </button>
+          </div>
+
+          <div class="archive-panel no-print" id="archivePanel">
+            <h2>Arsip Laporan Masuk (Manajemen)</h2>
+            <div style="overflow-x: auto">
+              <table class="archive-table">
+                <thead>
+                  <tr>
+                    <th>Waktu Input</th>
+                    <th>Nama SPV</th>
+                    <th>Outlet</th>
+                    <th>Tanggal Laporan</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="archiveTableBody">
+                  <tr>
+                    <td colspan="5" style="text-align: center; color: #777">
+                      Belum ada laporan yang terekam.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
           <div class="dev-panel no-print" id="devPanel">
             <h2>Developer Panel</h2>
             <div class="grid">
@@ -455,32 +612,57 @@
               </div>
             </div>
             <div class="input-group" style="margin-top: 18px">
-              <label>Item Ceklis (Pisahkan dengan tanda koma)</label>
+              <label>Item Ceklist (Pisahkan dengan tanda koma)</label>
               <textarea
                 id="subpointsInput"
                 placeholder="Item 1, Item 2, Item 3"
               ></textarea>
             </div>
-            <div style="margin-top: 20px">
+            <div style="margin-top: 20px; display: flex; gap: 10px">
               <button class="btn btn-primary" onclick="addPoint()">
                 Tambah Kategori
               </button>
+              <button class="btn btn-secondary" onclick="logoutDev()">
+                Keluar Dev Mode
+              </button>
             </div>
-            <div class="small">Username: admin | Password: 123456</div>
+            <div class="small">Username: kiyozora | Password: satusampe8</div>
           </div>
 
           <div class="footer-design">
             <div>Ceklis Harian Supervisor &copy; 2026</div>
-            <div>Design by <span>RifkiMohamad</span></div>
+            <div>
+              Design by <span>RifkiMohamad</span> |
+              <span class="footer-link" onclick="toggleArchivePanel()"
+                >Database Arsip</span
+              >
+            </div>
           </div>
         </div>
       </div>
     </div>
 
+    <div class="modal-overlay" id="previewModal">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 id="modalTitle">Detail Laporan Supervisor</h3>
+          <button class="modal-close" onclick="closePreviewModal()">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body" id="modalBodyContent"></div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closePreviewModal()">
+            Tutup
+          </button>
+          <button class="btn btn-primary" id="modalDownloadBtn">
+            Unduh File PDF
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script>
-      // ==========================================
-      // DATABASE POIN CEKLIS GABUNGAN LENGKAP
-      // ==========================================
       let isDeveloperMode = false;
       const checklistData = {
         awalShift: [
@@ -648,9 +830,6 @@
         ],
       };
 
-      // ==========================================
-      // RENDER CORE VIEW ENGINE WITH STORAGE
-      // ==========================================
       function renderChecklist() {
         Object.keys(checklistData).forEach((sectionId) => {
           const sectionContainer = document.getElementById(sectionId);
@@ -669,7 +848,6 @@
 
             point.items.forEach((item, itemIdx) => {
               const uniqueId = `${sectionId}-${index}-${itemIdx}`;
-              // Cek status dari localStorage
               const isChecked =
                 localStorage.getItem(`check-${uniqueId}`) === "true"
                   ? "checked"
@@ -698,7 +876,6 @@
           });
         });
 
-        // Load data identitas atas
         const fields = ["nama-spv", "date", "waktu-kerja", "outlet"];
         fields.forEach((field) => {
           const savedValue = localStorage.getItem(`field-${field}`);
@@ -706,9 +883,10 @@
             document.getElementById(field).value = savedValue;
           }
         });
+
+        renderArchiveTable();
       }
 
-      // Fungsi Pembantu Save Ke LocalStorage
       function saveStatus(id, value) {
         localStorage.setItem(id, value);
       }
@@ -719,30 +897,24 @@
         saveStatus(id, cb.checked);
       }
 
-      // Pasang Event Listener untuk Input Atas
       ["nama-spv", "date", "waktu-kerja", "outlet"].forEach((field) => {
         document.getElementById(field).addEventListener("input", function () {
           saveStatus(`field-${field}`, this.value);
         });
       });
 
-      // INITIAL ENGINE SETUP
       renderChecklist();
       if (!document.getElementById("date").value) {
         document.getElementById("date").valueAsDate = new Date();
         saveStatus("field-date", document.getElementById("date").value);
       }
 
-      // ==========================================
-      // RESET SYSTEM FORM FOR NEXT DAY
-      // ==========================================
       function resetForm() {
         if (
           confirm(
             "Apakah Anda yakin ingin menghapus seluruh isian form hari ini untuk memulai hari baru?",
           )
         ) {
-          // Ambil semua keys di localStorage lalu hapus yang berkaitan dengan form
           Object.keys(localStorage).forEach((key) => {
             if (
               key.startsWith("check-") ||
@@ -752,7 +924,6 @@
               localStorage.removeItem(key);
             }
           });
-          // Reset UI input text atas secara manual
           ["nama-spv", "waktu-kerja", "outlet"].forEach((field) => {
             document.getElementById(field).value = "";
           });
@@ -762,23 +933,14 @@
         }
       }
 
-      // ==========================================
-      // CONTROLLER LOGIC (DEV PANEL & CRUD)
-      // ==========================================
       function openDevLogin() {
         const username = prompt("Username:");
         const password = prompt("Password:");
 
         if (username === "kiyozora" && password === "satusampe8") {
-          // 1. Aktifkan status developer
           isDeveloperMode = true;
-
-          // 2. Munculkan panel tambah data kustom
-          document.getElementById("devPanel").style.style.display = "block";
-
-          // 3. Render ulang checklist agar tombol hapus keluar ke layar
+          document.getElementById("devPanel").style.display = "block";
           renderChecklist();
-
           alert(
             "Developer Mode Aktif! Anda sekarang bisa menambah & menghapus kategori.",
           );
@@ -786,10 +948,11 @@
           alert("Password salah atau Anda tidak memiliki akses!");
         }
       }
+
       function logoutDev() {
         isDeveloperMode = false;
         document.getElementById("devPanel").style.display = "none";
-        renderChecklist(); // Sembunyikan kembali semua tombol hapus
+        renderChecklist();
       }
 
       function addPoint() {
@@ -827,56 +990,168 @@
       }
 
       // ==========================================
-      // RENDER PDF SYSTEM EXPORT (PROFESSIONAL TABLE REPORT)
+      // MANAJEMEN DATA ARSIP (LOCAL STORAGE ENGINE)
+      // ==========================================
+      function toggleArchivePanel() {
+        const panel = document.getElementById("archivePanel");
+        panel.style.display =
+          panel.style.display === "block" ? "none" : "block";
+        if (panel.style.display === "block") {
+          panel.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+
+      function saveToArchive(metaData, completeHTML) {
+        let currentArchives =
+          JSON.parse(localStorage.getItem("hantaleya_archives")) || [];
+
+        const newRecord = {
+          id: "arch-" + Date.now(),
+          timestamp: new Date().toLocaleString("id-ID"),
+          spv: metaData.nama,
+          outlet: metaData.outlet,
+          dateReport: metaData.tanggal,
+          htmlContent: completeHTML,
+        };
+
+        currentArchives.unshift(newRecord);
+        localStorage.setItem(
+          "hantaleya_archives",
+          JSON.stringify(currentArchives),
+        );
+        renderArchiveTable();
+      }
+
+      function renderArchiveTable() {
+        const tbody = document.getElementById("archiveTableBody");
+        let currentArchives =
+          JSON.parse(localStorage.getItem("hantaleya_archives")) || [];
+
+        if (currentArchives.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #777;">Belum ada laporan yang terekam.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = "";
+        currentArchives.forEach((record) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td><strong>${record.timestamp}</strong></td>
+            <td>${record.spv}</td>
+            <td>${record.outlet}</td>
+            <td>${record.dateReport}</td>
+            <td>
+              <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px; border-radius: 6px;" onclick="previewArchivedReport('${record.id}')">Buka Laporan</button>
+              <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px; border-radius: 6px; margin-left: 5px;" onclick="downloadArchivedPDF('${record.id}')">Unduh PDF</button>
+              <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px; border-radius: 6px; margin-left: 5px;" onclick="deleteArchive('${record.id}')">Hapus</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+
+      // NEW: LIVE PREVIEW MECHANISM WITHOUT DOWNLOADING ANYTHING
+      function previewArchivedReport(id) {
+        let currentArchives =
+          JSON.parse(localStorage.getItem("hantaleya_archives")) || [];
+        const record = currentArchives.find((item) => item.id === id);
+
+        if (!record) {
+          alert("Laporan tidak ditemukan.");
+          return;
+        }
+
+        document.getElementById("modalTitle").innerText =
+          `Detail Laporan: ${record.spv} (${record.outlet}) - ${record.dateReport}`;
+        document.getElementById("modalBodyContent").innerHTML =
+          record.htmlContent;
+
+        // Atur tombol unduh di dalam modal agar mengarah ke berkas bersangkutan
+        document
+          .getElementById("modalDownloadBtn")
+          .setAttribute("onclick", `downloadArchivedPDF('${record.id}')`);
+
+        document.getElementById("previewModal").style.display = "flex";
+      }
+
+      function closePreviewModal() {
+        document.getElementById("previewModal").style.display = "none";
+      }
+
+      function downloadArchivedPDF(id) {
+        let currentArchives =
+          JSON.parse(localStorage.getItem("hantaleya_archives")) || [];
+        const record = currentArchives.find((item) => item.id === id);
+
+        if (record) {
+          const tempContainer = document.createElement("div");
+          tempContainer.innerHTML = record.htmlContent;
+
+          const filename = `Ceklist_${record.outlet.replace(/[^a-zA-Z0-9]/g, "_")}_${record.dateReport}_${record.spv.replace(/[^a-zA-Z0-9]/g, "_")}.pdf`;
+
+          const options = {
+            margin: 5,
+            filename: filename,
+            image: { type: "jpeg", quality: 1 },
+            html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+            pagebreak: { mode: ["css", "legacy"] },
+          };
+
+          html2pdf().set(options).from(tempContainer).save();
+        }
+      }
+
+      function deleteArchive(id) {
+        if (
+          confirm("Hapus rekaman arsip ini secara permanen dari perangkat?")
+        ) {
+          let currentArchives =
+            JSON.parse(localStorage.getItem("hantaleya_archives")) || [];
+          currentArchives = currentArchives.filter((item) => item.id !== id);
+          localStorage.setItem(
+            "hantaleya_archives",
+            JSON.stringify(currentArchives),
+          );
+          renderArchiveTable();
+          closePreviewModal();
+        }
+      }
+
+      // ==========================================
+      // RENDER PDF SYSTEM EXPORT WITH AUTO-ARCHIVE
       // ==========================================
       function downloadPDF() {
         const element = document.getElementById("reportArea");
 
-        // 1. Ambil data identitas untuk penamaan file
-        const namaSPV =
-          document
-            .getElementById("nama-spv")
-            .value.trim()
-            .replace(/[^a-zA-Z0-9]/g, "_") || "Tanpa_Nama";
-        const tanggalInput = document.getElementById("date").value;
-        const namaOutlet =
-          document
-            .getElementById("outlet")
-            .value.trim()
-            .replace(/[^a-zA-Z0-9]/g, "_") || "Hantaleya";
+        const valNama = document.getElementById("nama-spv").value.trim();
+        const valTanggal = document.getElementById("date").value;
+        const valWaktu = document.getElementById("waktu-kerja").value.trim();
+        const valOutlet = document.getElementById("outlet").value.trim();
+
+        if (!valNama || !valOutlet) {
+          alert(
+            "Mohon lengkapi Nama SPV dan Nama Outlet terlebih dahulu sebelum mengunduh!",
+          );
+          return;
+        }
 
         let tanggalFormatted = "Tanpa_Tanggal";
-        if (tanggalInput) {
-          const d = new Date(tanggalInput);
+        if (valTanggal) {
+          const d = new Date(valTanggal);
           const tgl = String(d.getDate()).padStart(2, "0");
           const bln = String(d.getMonth() + 1).padStart(2, "0");
           const thn = d.getFullYear();
           tanggalFormatted = `${tgl}-${bln}-${thn}`;
         }
-        const namaFileAkhir = `Ceklist_${namaOutlet}_${tanggalFormatted}_${namaSPV}.pdf`;
+        const namaFileAkhir = `Ceklist_${valOutlet.replace(/[^a-zA-Z0-9]/g, "_")}_${tanggalFormatted}_${valNama.replace(/[^a-zA-Z0-9]/g, "_")}.pdf`;
 
-        // ===================================================
-        // TRANSFORMASI TOTAL MENJADI TABEL LAPORAN PROFESIONAL
-        // ===================================================
-        // Simpan isi HTML asli sebelum dirombak
-        const originalHTML = element.innerHTML;
-
-        // Ambil nilai input yang sedang diisi oleh user saat ini
-        const valNama = document.getElementById("nama-spv").value;
-        const valTanggal = document.getElementById("date").value;
-        const valWaktu = document.getElementById("waktu-kerja").value;
-        const valOutlet = document.getElementById("outlet").value;
-
-        // Buat kontainer tiruan khusus untuk PDF laporan
         const pdfContainer = document.createElement("div");
         pdfContainer.style.background = "#fff";
-
         pdfContainer.style.padding = "20px";
-        pdfContainer.style.background = "#fff";
         pdfContainer.style.color = "#000";
         pdfContainer.style.fontFamily = "'Inter', sans-serif";
 
-        // Gaya CSS internal khusus untuk tabel PDF laporan
         let tableStyles = `
           <style>
             .pdf-header { border-bottom: 3px double #7b1528; padding-bottom: 12px; margin-bottom: 20px; }
@@ -896,7 +1171,6 @@
           </style>
         `;
 
-        // Susun HTML Struktur Dokumen Laporan Resmi
         let pdfHTML = tableStyles;
         pdfHTML += `
           <div class="pdf-header">
@@ -916,7 +1190,6 @@
           </div>
         `;
 
-        // Ambil data checklist secara terstruktur berdasarkan object data utama
         const sectionsMapping = {
           awalShift: "Awal Shift",
           operasional: "Operasional (Running Shift)",
@@ -938,19 +1211,15 @@
           `;
 
           checklistData[sectionId].forEach((point, index) => {
-            // Baris judul kategori (Karyawan, Kebersihan, dll)
             pdfHTML += `
               <tr class="pdf-cate-row">
                 <td colspan="2">${point.title}</td>
               </tr>
             `;
 
-            // Baris item-item penilaian di bawahnya
             point.items.forEach((item, itemIdx) => {
               const uniqueId = `${sectionId}-${index}-${itemIdx}`;
               const cbReal = document.getElementById(`check-${uniqueId}`);
-
-              // Jika dicetak dicentang tampilkan simbol [ V ], jika tidak kosongkan
               const statusSimbol = cbReal && cbReal.checked ? "&#10004;" : "";
 
               pdfHTML += `
@@ -961,7 +1230,6 @@
               `;
             });
 
-            // Ambil catatan tulisan tangan dari textarea kategori ini
             const taReal = document.getElementById(
               `note-${sectionId}-${index}`,
             );
@@ -981,7 +1249,6 @@
           pdfHTML += `</tbody></table>`;
         });
 
-        // Bagian Footer Tanda Tangan Dokumen Cetak Resmi
         pdfHTML += `
           <table style="width: 100%; margin-top: 50px; font-size: 12px; border-collapse: collapse;">
             <tr>
@@ -1005,17 +1272,20 @@
 
         pdfContainer.innerHTML = pdfHTML;
 
-        // 3. Konfigurasi html2pdf standar dokumen portrait
+        // --- ENGINES OTOMATIS ARSIP ---
+        saveToArchive(
+          {
+            nama: valNama,
+            outlet: valOutlet,
+            tanggal: tanggalFormatted,
+          },
+          pdfHTML,
+        );
+
         const options = {
           margin: 5,
-
           filename: namaFileAkhir,
-
-          image: {
-            type: "jpeg",
-            quality: 1,
-          },
-
+          image: { type: "jpeg", quality: 1 },
           html2canvas: {
             scale: window.innerWidth < 768 ? 1 : 2,
             useCORS: true,
@@ -1023,20 +1293,14 @@
             scrollX: 0,
             scrollY: 0,
           },
-
-          jsPDF: {
-            unit: "mm",
-            format: "a4",
-            orientation: "portrait",
-          },
-
-          pagebreak: {
-            mode: ["css", "legacy"],
-          },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          pagebreak: { mode: ["css", "legacy"] },
         };
 
-        // 4. Jalankan cetak menggunakan kontainer tiruan profesional yang baru dibuat
         html2pdf().set(options).from(pdfContainer).save();
+        alert(
+          "Laporan berhasil diunduh dan OTOMATIS tersimpan di Database Arsip Manajemen!",
+        );
       }
     </script>
   </body>
