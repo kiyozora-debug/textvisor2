@@ -1124,21 +1124,40 @@
       }
 
       function deleteArchive(id) {
+        // PERTAHANAN 1: Konfirmasi awal agar tidak salah pencet
         if (
-          confirm("Hapus rekaman arsip ini secara permanen dari server Cloud?")
+          confirm(
+            "Apakah Anda yakin ingin menghapus rekaman arsip ini secara permanen?",
+          )
         ) {
-          database
-            .ref("archives/" + id)
-            .remove()
-            .then(() => {
-              closePreviewModal();
-            })
-            .catch((error) => {
-              alert("Gagal menghapus data: " + error.message);
-            });
+          // PERTAHANAN 2: Meminta password khusus Developer/Owner
+          const inputPassword = prompt(
+            "Masukkan Password Otorisasi untuk menghapus data:",
+          );
+
+          // Silakan ganti password "hantaleya77" di bawah ini sesuai keinginan King
+          if (inputPassword === "hantaleya77") {
+            let currentArchives =
+              JSON.parse(localStorage.getItem("hantaleya_archives")) || [];
+            currentArchives = currentArchives.filter((item) => item.id !== id);
+            localStorage.setItem(
+              "hantaleya_archives",
+              JSON.stringify(currentArchives),
+            );
+            renderArchiveTable();
+            closePreviewModal();
+            alert("Data arsip berhasil dihapus secara permanen!");
+          } else if (inputPassword === null) {
+            // Jika user menekan tombol 'Cancel' pada pop-up prompt
+            alert("Penghapusan dibatalkan.");
+          } else {
+            // Jika password yang dimasukkan salah
+            alert(
+              "Password SALAH! Anda tidak memiliki otoritas untuk menghapus arsip ini.",
+            );
+          }
         }
       }
-
       // ==========================================
       // RENDER PDF SYSTEM EXPORT WITH AUTO-ARCHIVE
       // ==========================================
